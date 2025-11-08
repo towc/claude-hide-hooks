@@ -1,15 +1,19 @@
 # Claude Hide Hooks
 
-A Claude Code plugin that patches the Claude binary to conditionally hide successful hook execution messages.
+A Claude Code plugin that patches the Claude binary to hide successful hook execution messages.
 
 ## What It Does
 
-This plugin addresses [Issue #9603](https://github.com/anthropics/claude-code/issues/9603) - hiding the "hook succeeded" messages that can clutter your terminal when hooks are working properly.
+This plugin addresses [Issue #9603](https://github.com/anthropics/claude-code/issues/9603) - hiding the "hook succeeded: Success" messages that clutter your terminal when hooks are working properly.
+
+**Originally created to support [Claude Boops](https://github.com/towc/claude-boops)** - a plugin that adds delightful sound feedback to Claude Code using hooks. While boops provides great audio feedback, it generates verbose hook messages. This plugin removes those messages for a cleaner experience.
 
 **What gets hidden:**
 - ✅ Successful hook execution messages (e.g., "hook succeeded: Success")
 - ❌ Error messages and failures remain visible
 - ❌ Does NOT affect Claude's ability to receive hook feedback
+
+**Works with any plugin that uses hooks** - not just boops!
 
 ## ⚠️ Important Disclaimer
 
@@ -24,24 +28,43 @@ This plugin addresses [Issue #9603](https://github.com/anthropics/claude-code/is
 
 ## Installation
 
-### Via Marketplace (Recommended)
+### Recommended: Full Setup with Boops
 
-First, add the marketplace:
+For the best experience, install both `hide-hooks` (clean terminal) and `boops` (sound feedback):
 
 ```bash
+# Add the marketplace
 claude plugin marketplace add towc/claude-marketplace
-```
 
-Then install the plugin:
+# Install boops for sound feedback
+claude plugin install boops
 
-```bash
+# Install hide-hooks to clean up "hook succeeded" messages
 claude plugin install hide-hooks
+
+# After Claude restarts, apply the hide-hooks patch
+/hide-hooks:patch
+
+# Restart Claude one more time to see the changes
 ```
 
-After installation, **apply the patch by running:**
+**Why boops?** While hide-hooks cleans up your terminal, [Claude Boops](https://github.com/towc/claude-boops) adds delightful sound feedback so you know when Claude is thinking, waiting for input, or has finished. They work perfectly together!
+
+### Just Hide-Hooks
+
+If you only want to hide hook messages without sound feedback:
 
 ```bash
+# Add the marketplace
+claude plugin marketplace add towc/claude-marketplace
+
+# Install hide-hooks
+claude plugin install hide-hooks
+
+# After Claude restarts, apply the patch
 /hide-hooks:patch
+
+# Restart Claude to see the changes
 ```
 
 ### Direct Installation
@@ -131,11 +154,18 @@ This completely removes the hook success messages from the UI.
 - The patch only affects UI rendering, not functionality
 - Hook errors and important messages remain visible
 
-## Related
+## Companion Plugins
+
+### Claude Boops (Recommended)
+
+Since you're cleaning up hook messages, you might want actual feedback when Claude is working. **[Claude Boops](https://github.com/towc/claude-boops)** adds delightful sound feedback to Claude Code - different sounds for different events (submit, question, success, error).
+
+See the [Installation](#installation) section above for the complete setup with both plugins.
+
+## Related Issues
 
 - [Issue #9603](https://github.com/anthropics/claude-code/issues/9603) - Turn off hook succeeded messages
 - [Issue #3060](https://github.com/anthropics/claude-code/issues/3060) - Fix unnecessary printing after successful hook execution
-- [Claude Boops](https://github.com/towc/claude-boops) - Add sound feedback to Claude Code (auto-installs this plugin)
 
 ## License
 
