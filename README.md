@@ -82,8 +82,10 @@ After installing the plugin, run:
 This will:
 1. Find your Claude executable (resolving any symlinks)
 2. Create a backup file (e.g., `claude.bak.js`)
-3. Patch the code to conditionally hide successful hook messages
+3. Patch the code to hide successful hook messages
 4. Show you how to revert if needed
+
+**⚠️ IMPORTANT:** Restart Claude after patching to see the changes.
 
 ### After Claude Updates
 

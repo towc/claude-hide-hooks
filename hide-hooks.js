@@ -176,7 +176,7 @@ try {
 // Verify the change
 if (newContent.indexOf(searchString) === -1) {
     console.log('\n✓ Patch applied successfully!');
-    console.log('\nHook messages are now hidden.\n');
+    console.log('\n⚠️  IMPORTANT: Restart Claude to see the changes.\n');
     console.log('To revert: /hide-hooks:revert');
     console.log('After updating Claude CLI: re-run /hide-hooks:patch\n');
 } else {
