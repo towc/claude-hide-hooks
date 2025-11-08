@@ -11,6 +11,17 @@ This plugin addresses [Issue #9603](https://github.com/anthropics/claude-code/is
 - ❌ Error messages and failures remain visible
 - ❌ Does NOT affect Claude's ability to receive hook feedback
 
+## ⚠️ Important Disclaimer
+
+**This plugin was created by Claude (AI) with human guidance:**
+- A human laid out the plans and guided the implementation
+- **All code is AI-generated ("vibed") and not thoroughly checked**
+- No formal testing or QA process
+- May contain bugs, security issues, or unexpected behavior
+- Modifies the Claude binary itself (unsupported by Anthropic)
+
+**If you encounter issues:** Open an issue on GitHub.
+
 ## Installation
 
 ### Via Marketplace (Recommended)
@@ -48,13 +59,23 @@ claude plugin uninstall hide-hooks
 
 ## Usage
 
-### Automatic Patch (Recommended)
+### Automatic Patch
 
 The patch is applied automatically when you install the plugin - no manual steps needed!
 
-### Manual Patch (Optional)
+### After Claude Updates
 
-If you need to re-apply the patch or want to run it manually:
+When you update Claude Code, the patch will be overwritten. Simply re-apply it:
+
+```bash
+/hide-hooks
+```
+
+**Note:** You don't need to uninstall and reinstall the plugin, just run the command!
+
+### Manual Patch
+
+You can run the patch command anytime:
 
 ```bash
 /hide-hooks
