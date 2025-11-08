@@ -17,6 +17,8 @@ This will:
 
 **⚠️ Warning:** This modifies the Claude binary and is unsupported by Anthropic. Use at your own risk. Future Claude updates will overwrite this patch.
 
+**Important:** Restart Claude after patching to see the changes.
+
 The script will automatically detect if sudo is required.
 
 ```bash
