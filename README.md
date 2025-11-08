@@ -41,7 +41,7 @@ claude plugin install hide-hooks
 After installation, **apply the patch by running:**
 
 ```bash
-/hide-hooks
+/hide-hooks:patch
 ```
 
 ### Direct Installation
@@ -51,7 +51,7 @@ cd ~/.claude/plugins/marketplaces/
 git clone https://github.com/towc/claude-hide-hooks.git
 ```
 
-Restart Claude Code to load the plugin, then run `/hide-hooks` to apply the patch.
+Restart Claude Code to load the plugin, then run `/hide-hooks:patch` to apply the patch.
 
 ### Uninstallation
 
@@ -76,7 +76,7 @@ claude plugin uninstall hide-hooks
 After installing the plugin, run:
 
 ```bash
-/hide-hooks
+/hide-hooks:patch
 ```
 
 This will:
@@ -90,7 +90,7 @@ This will:
 When you update Claude Code, the patch will be overwritten. Simply re-apply it:
 
 ```bash
-/hide-hooks
+/hide-hooks:patch
 ```
 
 **Note:** You don't need to uninstall and reinstall the plugin, just run the command!

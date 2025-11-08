@@ -8,9 +8,9 @@
   },
   "repository": "https://github.com/towc/claude-hide-hooks",
   "commands": {
-    "hide-hooks": {
+    "patch": {
       "description": "Patch Claude binary to conditionally hide successful hook messages",
-      "source": "./commands/hide-hooks.md"
+      "source": "./commands/patch.md"
     },
     "revert": {
       "description": "Revert the hide-hooks patch and restore original Claude behavior",
