@@ -105,36 +105,20 @@ To restore the original behavior and show hook messages again:
 
 This will restore the Claude binary from backup.
 
-### Control Visibility
-
-**Default behavior (hooks hidden):**
-```bash
-claude
-```
-
-**Show hooks when debugging:**
-```bash
-SHOW_CLAUDE_HOOKS=true claude
-```
-
-**Permanent visibility (add to your shell profile):**
-```bash
-export SHOW_CLAUDE_HOOKS=true
-```
 
 ## How It Works
 
-The plugin patches the Claude binary by wrapping the hook success message rendering in a conditional check:
+The plugin patches the Claude binary by replacing the hook success message rendering with an early return:
 
 ```javascript
 // Before patch:
 return createElement(/* hook success message */);
 
 // After patch:
-return process.env.SHOW_CLAUDE_HOOKS === 'true' ? createElement(/* hook success message */) : null;
+return;
 ```
 
-This allows you to toggle visibility with an environment variable without needing to re-patch.
+This completely removes the hook success messages from the UI.
 
 ## Important Notes
 
