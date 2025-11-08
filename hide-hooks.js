@@ -121,33 +121,43 @@ const contextStart = Math.max(0, returnStart !== -1 ? returnStart : createElemen
 const contextEnd = Math.min(content.length, createElementEnd + 50);
 
 // Perform the replacement
+// Strategy: Replace the entire statement to avoid scope issues
+// Find the start of the statement (look for if/switch/etc before return)
+let statementStart = returnStart;
+if (returnStart !== -1) {
+    // Look backwards for common statement starters
+    for (let i = returnStart - 1; i >= Math.max(0, returnStart - 200); i--) {
+        const char = content[i];
+        // Look for statement boundaries
+        if (char === '{' || char === ';' || char === '}') {
+            statementStart = i + 1;
+            break;
+        }
+    }
+}
+
 let newContent;
 if (returnStart !== -1) {
-    // Replace from "return" to end of createElement with conditional check
-    const beforeReturn = content.substring(0, returnStart);
-    const createElementCall = content.substring(createElementStart, createElementEnd);
+    const beforeStatement = content.substring(0, statementStart);
     const afterCreateElement = content.substring(createElementEnd);
 
     // Check if there's already a semicolon right after createElement
     const hasSemicolon = afterCreateElement[0] === ';';
 
-    // Replace "return createElement(...)" with conditional that checks SHOW_CLAUDE_HOOKS
-    const replacement = `return process.env.SHOW_CLAUDE_HOOKS === 'true' ? ${createElementCall} : null`;
+    // Build a simple conditional: if env var is set, return createElement, else return early
+    const replacement = `if(process.env.SHOW_CLAUDE_HOOKS!=='true')return;return ${content.substring(returnStart + 7, createElementEnd)}`;
 
     if (hasSemicolon) {
-        // Keep the semicolon
-        newContent = beforeReturn + replacement + afterCreateElement;
+        newContent = beforeStatement + replacement + afterCreateElement;
     } else {
-        // Add a semicolon
-        newContent = beforeReturn + replacement + ';' + afterCreateElement;
+        newContent = beforeStatement + replacement + ';' + afterCreateElement;
     }
 } else {
-    // If we couldn't find return, wrap createElement call with conditional
-    console.warn('Warning: Could not find return statement, wrapping createElement with conditional');
+    // If we couldn't find return, just comment out the createElement
+    console.warn('Warning: Could not find return statement, commenting out createElement');
     const beforeCreateElement = content.substring(0, createElementStart);
-    const createElementCall = content.substring(createElementStart, createElementEnd);
     const afterCreateElement = content.substring(createElementEnd);
-    newContent = beforeCreateElement + `(process.env.SHOW_CLAUDE_HOOKS === 'true' ? ${createElementCall} : null)` + afterCreateElement;
+    newContent = beforeCreateElement + '(process.env.SHOW_CLAUDE_HOOKS==="true"?1:0)&&' + content.substring(createElementStart, createElementEnd) + afterCreateElement;
 }
 
 // Context for verification (not shown to user)
