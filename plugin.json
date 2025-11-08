@@ -1,5 +1,5 @@
 {
-  "name": "claude-hide-hooks",
+  "name": "hide-hooks",
   "version": "1.0.0",
   "description": "Hide successful hook execution messages in Claude Code",
   "author": "towc",

@@ -13,29 +13,35 @@ This plugin addresses [Issue #9603](https://github.com/anthropics/claude-code/is
 
 ## Installation
 
-### Via Plugin Marketplace
+### Via Marketplace (Recommended)
+
+First, add the marketplace:
 
 ```bash
-claude plugin install claude-hide-hooks
+claude plugin marketplace add towc/claude-marketplace
+```
+
+Then install the plugin:
+
+```bash
+claude plugin install hide-hooks
 ```
 
 **The patch is applied automatically on installation!** No need to run any additional commands.
 
-### Manual Installation
+### Direct Installation
 
-1. Clone this repository into your Claude plugins directory:
 ```bash
 cd ~/.claude/plugins/marketplaces/
 git clone https://github.com/towc/claude-hide-hooks.git
 ```
 
-2. Restart Claude Code to load the plugin
-3. The patch will be applied automatically on first load
+Restart Claude Code to load the plugin. The patch will be applied automatically on first load.
 
 ### Uninstallation
 
 ```bash
-claude plugin uninstall claude-hide-hooks
+claude plugin uninstall hide-hooks
 ```
 
 **The patch is automatically reverted on uninstallation**, restoring the original Claude behavior
