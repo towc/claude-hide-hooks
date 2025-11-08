@@ -2,11 +2,15 @@
   "name": "hide-hooks",
   "version": "1.0.0",
   "description": "Hide successful hook execution messages in Claude Code",
-  "author": "towc",
+  "author": {
+    "name": "towc",
+    "url": "https://github.com/towc"
+  },
   "repository": "https://github.com/towc/claude-hide-hooks",
   "commands": {
     "hide-hooks": {
-      "description": "Patch Claude binary to conditionally hide successful hook messages"
+      "description": "Patch Claude binary to conditionally hide successful hook messages",
+      "source": "./commands/hide-hooks.md"
     }
   }
 }
