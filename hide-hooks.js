@@ -139,26 +139,31 @@ console.log(content.substring(contextStart, contextEnd));
 // Perform the replacement
 let newContent;
 if (returnStart !== -1) {
-    // Replace from "return" to end of createElement with just "return;"
+    // Replace from "return" to end of createElement with conditional check
     const beforeReturn = content.substring(0, returnStart);
+    const createElementCall = content.substring(createElementStart, createElementEnd);
     const afterCreateElement = content.substring(createElementEnd);
 
     // Check if there's already a semicolon right after createElement
     const hasSemicolon = afterCreateElement[0] === ';';
 
+    // Replace "return createElement(...)" with conditional that checks SHOW_CLAUDE_HOOKS
+    const replacement = `return process.env.SHOW_CLAUDE_HOOKS === 'true' ? ${createElementCall} : null`;
+
     if (hasSemicolon) {
-        // Replace "return ...createElement(...);" with "return;"
-        newContent = beforeReturn + 'return' + afterCreateElement;
+        // Keep the semicolon
+        newContent = beforeReturn + replacement + afterCreateElement;
     } else {
-        // Replace "return ...createElement(...)" with "return;"
-        newContent = beforeReturn + 'return;' + afterCreateElement;
+        // Add a semicolon
+        newContent = beforeReturn + replacement + ';' + afterCreateElement;
     }
 } else {
-    // If we couldn't find return, just replace the createElement call with null
-    console.warn('Warning: Could not find return statement, replacing createElement with null');
+    // If we couldn't find return, wrap createElement call with conditional
+    console.warn('Warning: Could not find return statement, wrapping createElement with conditional');
     const beforeCreateElement = content.substring(0, createElementStart);
+    const createElementCall = content.substring(createElementStart, createElementEnd);
     const afterCreateElement = content.substring(createElementEnd);
-    newContent = beforeCreateElement + 'null' + afterCreateElement;
+    newContent = beforeCreateElement + `(process.env.SHOW_CLAUDE_HOOKS === 'true' ? ${createElementCall} : null)` + afterCreateElement;
 }
 
 // Show context after replacement
@@ -205,10 +210,12 @@ try {
 }
 
 // Verify the change
-if (newContent.indexOf(searchString) === -1) {
-    console.log('✓ Success: Search string removed from file');
+if (newContent.indexOf('process.env.SHOW_CLAUDE_HOOKS') !== -1) {
+    console.log('✓ Success: Hook messages are now conditionally hidden');
+    console.log('  - Set SHOW_CLAUDE_HOOKS=true to show hook messages');
+    console.log('  - Leave unset (default) to hide hook messages');
 } else {
-    console.error('✗ Warning: Search string still exists in file');
+    console.error('✗ Warning: Conditional check was not added properly');
 }
 
 console.log('\nDone!');
