@@ -67,14 +67,6 @@ claude plugin install hide-hooks
 # Restart Claude to see the changes
 ```
 
-### Direct Installation
-
-```bash
-cd ~/.claude/plugins/marketplaces/
-git clone https://github.com/towc/claude-hide-hooks.git
-```
-
-Restart Claude Code to load the plugin, then run `/hide-hooks:patch` to apply the patch.
 
 ### Uninstallation
 
