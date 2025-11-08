@@ -55,14 +55,12 @@ Restart Claude Code to load the plugin, then run `/hide-hooks` to apply the patc
 
 ### Uninstallation
 
-To revert the patch, restore from backup:
+**IMPORTANT:** Uninstalling the plugin does NOT automatically revert the patch. You must revert it manually first.
+
+Run the revert command:
 
 ```bash
-# If sudo was required during patch:
-sudo cp ~/.local/bin/claude.bak.js ~/.local/bin/claude.js
-
-# Otherwise:
-cp ~/.local/bin/claude.bak.js ~/.local/bin/claude.js
+/hide-hooks:revert
 ```
 
 Then uninstall the plugin:
@@ -97,6 +95,16 @@ When you update Claude Code, the patch will be overwritten. Simply re-apply it:
 
 **Note:** You don't need to uninstall and reinstall the plugin, just run the command!
 
+### Revert the Patch
+
+To restore the original behavior and show hook messages again:
+
+```bash
+/hide-hooks:revert
+```
+
+This will restore the Claude binary from backup.
+
 ### Control Visibility
 
 **Default behavior (hooks hidden):**
@@ -112,18 +120,6 @@ SHOW_CLAUDE_HOOKS=true claude
 **Permanent visibility (add to your shell profile):**
 ```bash
 export SHOW_CLAUDE_HOOKS=true
-```
-
-### Reverting the Patch
-
-The script creates a backup when you first run it. To restore:
-
-```bash
-# If sudo was required:
-sudo cp ~/.local/bin/claude.bak.js ~/.local/bin/claude.js
-
-# Otherwise:
-cp ~/.local/bin/claude.bak.js ~/.local/bin/claude.js
 ```
 
 ## How It Works

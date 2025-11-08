@@ -11,6 +11,10 @@
     "hide-hooks": {
       "description": "Patch Claude binary to conditionally hide successful hook messages",
       "source": "./commands/hide-hooks.md"
+    },
+    "revert": {
+      "description": "Revert the hide-hooks patch and restore original Claude behavior",
+      "source": "./commands/revert.md"
     }
   }
 }
