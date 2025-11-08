@@ -38,7 +38,11 @@ Then install the plugin:
 claude plugin install hide-hooks
 ```
 
-**The patch is applied automatically on installation!** No need to run any additional commands.
+After installation, **apply the patch by running:**
+
+```bash
+/hide-hooks
+```
 
 ### Direct Installation
 
@@ -47,35 +51,31 @@ cd ~/.claude/plugins/marketplaces/
 git clone https://github.com/towc/claude-hide-hooks.git
 ```
 
-Restart Claude Code to load the plugin. The patch will be applied automatically on first load.
+Restart Claude Code to load the plugin, then run `/hide-hooks` to apply the patch.
 
 ### Uninstallation
+
+To revert the patch, restore from backup:
+
+```bash
+# If sudo was required during patch:
+sudo cp ~/.local/bin/claude.bak.js ~/.local/bin/claude.js
+
+# Otherwise:
+cp ~/.local/bin/claude.bak.js ~/.local/bin/claude.js
+```
+
+Then uninstall the plugin:
 
 ```bash
 claude plugin uninstall hide-hooks
 ```
 
-**The patch is automatically reverted on uninstallation**, restoring the original Claude behavior
-
 ## Usage
 
-### Automatic Patch
+### Apply the Patch
 
-The patch is applied automatically when you install the plugin - no manual steps needed!
-
-### After Claude Updates
-
-When you update Claude Code, the patch will be overwritten. Simply re-apply it:
-
-```bash
-/hide-hooks
-```
-
-**Note:** You don't need to uninstall and reinstall the plugin, just run the command!
-
-### Manual Patch
-
-You can run the patch command anytime:
+After installing the plugin, run:
 
 ```bash
 /hide-hooks
@@ -86,6 +86,16 @@ This will:
 2. Create a backup file (e.g., `claude.bak.js`)
 3. Patch the code to conditionally hide successful hook messages
 4. Show you how to revert if needed
+
+### After Claude Updates
+
+When you update Claude Code, the patch will be overwritten. Simply re-apply it:
+
+```bash
+/hide-hooks
+```
+
+**Note:** You don't need to uninstall and reinstall the plugin, just run the command!
 
 ### Control Visibility
 
