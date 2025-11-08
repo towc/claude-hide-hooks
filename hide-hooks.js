@@ -7,10 +7,7 @@ const path = require('path');
 // Function to resolve the actual file path of a command
 function resolveCommandPath(command) {
     try {
-        // First, find where the command is located
-        console.log(`Finding ${command} executable...`);
         let commandPath = execSync(`which ${command}`, { encoding: 'utf-8' }).trim();
-        console.log(`Found at: ${commandPath}`);
 
         // Resolve symlinks by following them to the actual file
         let resolvedPath = commandPath;
@@ -22,7 +19,6 @@ function resolveCommandPath(command) {
                 const stats = fs.lstatSync(resolvedPath);
                 if (stats.isSymbolicLink()) {
                     const linkTarget = fs.readlinkSync(resolvedPath);
-                    console.log(`  -> Symlink points to: ${linkTarget}`);
 
                     // Handle relative symlinks
                     if (path.isAbsolute(linkTarget)) {
@@ -30,7 +26,6 @@ function resolveCommandPath(command) {
                     } else {
                         resolvedPath = path.resolve(path.dirname(resolvedPath), linkTarget);
                     }
-                    console.log(`  -> Resolved to: ${resolvedPath}`);
                 } else {
                     // Not a symlink, we've found the actual file
                     break;
@@ -42,11 +37,6 @@ function resolveCommandPath(command) {
             iterations++;
         }
 
-        if (iterations >= maxIterations) {
-            console.warn('Warning: Maximum symlink resolution depth reached');
-        }
-
-        console.log(`Final resolved path: ${resolvedPath}`);
         return resolvedPath;
     } catch (err) {
         console.error(`Error finding ${command}: ${err.message}`);
@@ -58,7 +48,7 @@ function resolveCommandPath(command) {
 const filePath = process.argv[2] ? process.argv[2] : resolveCommandPath('claude');
 const searchString = ' hook succeeded: ';
 
-console.log(`\nReading file: ${filePath}`);
+console.log(`\nPatching Claude binary...`);
 let content;
 try {
     content = fs.readFileSync(filePath, 'utf-8');
@@ -67,16 +57,14 @@ try {
     process.exit(1);
 }
 
-console.log(`File size: ${(content.length / 1024 / 1024).toFixed(2)} MB`);
-
 // Find the position of the search string
 const pos = content.indexOf(searchString);
 if (pos === -1) {
-    console.error('Search string not found!');
+    console.error('Error: Could not find hook message in Claude binary.');
+    console.error('This may indicate a Claude CLI update changed the code structure.');
+    console.error('Please report this issue on GitHub.');
     process.exit(1);
 }
-
-console.log(`Found "${searchString}" at position ${pos}`);
 
 // Find the start of the createElement call by searching backward
 // Look for "createElement(" pattern
@@ -89,11 +77,10 @@ for (let i = pos; i >= 0; i--) {
 }
 
 if (createElementStart === -1) {
-    console.error('Could not find createElement call!');
+    console.error('Error: Could not find createElement call.');
+    console.error('Please report this issue on GitHub.');
     process.exit(1);
 }
-
-console.log(`Found createElement at position ${createElementStart}`);
 
 // Now find the matching closing parenthesis
 // We need to track nested parentheses
@@ -112,11 +99,10 @@ for (let i = createElementStart + 14; i < content.length; i++) {
 }
 
 if (createElementEnd === -1) {
-    console.error('Could not find end of createElement call!');
+    console.error('Error: Could not find end of createElement call.');
+    console.error('Please report this issue on GitHub.');
     process.exit(1);
 }
-
-console.log(`createElement call ends at position ${createElementEnd}`);
 
 // Now search backward from createElementStart to find "return"
 // Look for the pattern "return " (with space after)
@@ -130,11 +116,9 @@ for (let i = createElementStart - 1; i >= Math.max(0, createElementStart - 100);
     }
 }
 
-// Show context before replacement
+// Context for debugging (not shown to user)
 const contextStart = Math.max(0, returnStart !== -1 ? returnStart : createElementStart - 50);
 const contextEnd = Math.min(content.length, createElementEnd + 50);
-console.log('\nContext before replacement:');
-console.log(content.substring(contextStart, contextEnd));
 
 // Perform the replacement
 let newContent;
@@ -166,9 +150,7 @@ if (returnStart !== -1) {
     newContent = beforeCreateElement + `(process.env.SHOW_CLAUDE_HOOKS === 'true' ? ${createElementCall} : null)` + afterCreateElement;
 }
 
-// Show context after replacement
-console.log('\nContext after replacement:');
-console.log(newContent.substring(contextStart, contextStart + (contextEnd - contextStart)));
+// Context for verification (not shown to user)
 
 // Create backup with format: <filename>.bak.<ext>
 // e.g., claude.js -> claude.bak.js
@@ -181,66 +163,30 @@ const backupPath = path.join(
 try {
     if (!fs.existsSync(backupPath)) {
         fs.copyFileSync(filePath, backupPath);
-        console.log(`\nBackup created: ${backupPath}`);
-    } else {
-        console.log(`\nBackup already exists: ${backupPath}`);
     }
 } catch (err) {
-    console.error(`Warning: Could not create backup: ${err.message}`);
-    console.error('Aborting to avoid data loss...');
+    console.error(`Error: Could not create backup: ${err.message}`);
+    console.error('Aborting to avoid data loss.');
     process.exit(1);
 }
 
 // Write the modified content back to the original file
 try {
     fs.writeFileSync(filePath, newContent);
-    console.log(`\n✓ Patched file written to: ${filePath}`);
 } catch (err) {
-    console.error(`Error writing file: ${err.message}`);
-
-    // Try to write to a .patched file instead
-    const patchedPath = filePath + '.patched';
-    try {
-        fs.writeFileSync(patchedPath, newContent);
-        console.log(`\nWrote to ${patchedPath} instead (you may need to copy it manually with sudo)`);
-    } catch (err2) {
-        console.error(`Error writing patched file: ${err2.message}`);
-        process.exit(1);
-    }
+    console.error(`\nError: Could not write patched file: ${err.message}`);
+    console.error('You may need to run this command with elevated permissions.');
+    process.exit(1);
 }
 
 // Verify the change
 if (newContent.indexOf('process.env.SHOW_CLAUDE_HOOKS') !== -1) {
-    console.log('✓ Success: Hook messages are now conditionally hidden');
-    console.log('  - Set SHOW_CLAUDE_HOOKS=true to show hook messages');
-    console.log('  - Leave unset (default) to hide hook messages');
+    console.log('\n✓ Patch applied successfully!');
+    console.log('\nHook messages are now hidden by default.');
+    console.log('Set SHOW_CLAUDE_HOOKS=true to show them when debugging.\n');
+    console.log('To revert: /hide-hooks:revert');
+    console.log('After updating Claude CLI: re-run /hide-hooks:patch\n');
 } else {
-    console.error('✗ Warning: Conditional check was not added properly');
+    console.error('\n✗ Warning: Conditional check was not added properly');
+    console.error('Please report this issue on GitHub.\n');
 }
-
-console.log('\nDone!');
-console.log('\n' + '='.repeat(70));
-console.log('HOW TO REVERT THIS CHANGE:');
-console.log('='.repeat(70));
-
-// Check if we need sudo based on file permissions
-let needsSudo = false;
-try {
-    // Try to check if file is writable
-    fs.accessSync(filePath, fs.constants.W_OK);
-} catch (err) {
-    needsSudo = true;
-}
-
-if (needsSudo) {
-    console.log(`\nRun this command to restore the original file:\n`);
-    console.log(`  sudo cp "${backupPath}" "${filePath}"`);
-    console.log(`\nOr to permanently remove the backup:\n`);
-    console.log(`  sudo rm "${backupPath}"`);
-} else {
-    console.log(`\nRun this command to restore the original file:\n`);
-    console.log(`  cp "${backupPath}" "${filePath}"`);
-    console.log(`\nOr to permanently remove the backup:\n`);
-    console.log(`  rm "${backupPath}"`);
-}
-console.log('\n' + '='.repeat(70));
