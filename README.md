@@ -19,6 +19,8 @@ This plugin addresses [Issue #9603](https://github.com/anthropics/claude-code/is
 claude plugin install claude-hide-hooks
 ```
 
+**The patch is applied automatically on installation!** No need to run any additional commands.
+
 ### Manual Installation
 
 1. Clone this repository into your Claude plugins directory:
@@ -28,12 +30,25 @@ git clone https://github.com/towc/claude-hide-hooks.git
 ```
 
 2. Restart Claude Code to load the plugin
+3. The patch will be applied automatically on first load
+
+### Uninstallation
+
+```bash
+claude plugin uninstall claude-hide-hooks
+```
+
+**The patch is automatically reverted on uninstallation**, restoring the original Claude behavior
 
 ## Usage
 
-### Hide Hook Messages
+### Automatic Patch (Recommended)
 
-Run the command to patch your Claude binary:
+The patch is applied automatically when you install the plugin - no manual steps needed!
+
+### Manual Patch (Optional)
+
+If you need to re-apply the patch or want to run it manually:
 
 ```bash
 /hide-hooks
