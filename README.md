@@ -28,32 +28,6 @@ This plugin addresses [Issue #9603](https://github.com/anthropics/claude-code/is
 
 ## Installation
 
-### Recommended: Full Setup with Boops
-
-For the best experience, install both `hide-hooks` (clean terminal) and `boops` (sound feedback):
-
-```bash
-# Add the marketplace
-claude plugin marketplace add towc/claude-marketplace
-
-# Install boops for sound feedback
-claude plugin install boops
-
-# Install hide-hooks to clean up "hook succeeded" messages
-claude plugin install hide-hooks
-
-# After Claude restarts, apply the hide-hooks patch
-/hide-hooks:patch
-
-# Restart Claude one more time to see the changes
-```
-
-**Why boops?** While hide-hooks cleans up your terminal, [Claude Boops](https://github.com/towc/claude-boops) adds delightful sound feedback so you know when Claude is thinking, waiting for input, or has finished. They work perfectly together!
-
-### Just Hide-Hooks
-
-If you only want to hide hook messages without sound feedback:
-
 ```bash
 # Add the marketplace
 claude plugin marketplace add towc/claude-marketplace
